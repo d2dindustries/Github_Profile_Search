@@ -1,4 +1,25 @@
 .header {
-	backgroundColor: rebeccapurple;
-	marginBottom: 1.45rem;
+	background: #13b1e9;
+	margin-bottom: 1.45rem;
+
+	> div {
+	    margin: 0px auto;
+	    max-width: 960px;
+	    padding: 1.45rem 1.0875rem;
+	}
+
+	> h1 {
+		margin: 0;
+	}
+
+	.link{
+		color: white;
+		text-decoration: none;
+		&:hover {
+			color: lightgray;
+		}
+		&:active {
+			color: #333;
+		}
+	}
 }

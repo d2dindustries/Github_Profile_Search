@@ -8,21 +8,9 @@ const Header = ({ siteTitle }) => (
     data-testid="app-header"
     className="header"
   >
-    <div
-      style={{
-        margin: `0 auto`,
-        maxWidth: 960,
-        padding: `1.45rem 1.0875rem`,
-      }}
-    >
-      <h1 style={{ margin: 0 }}>
-        <Link
-          to="/"
-          style={{
-            color: `white`,
-            textDecoration: `none`,
-          }}
-        >
+    <div>
+      <h1>
+        <Link className="link" to="/">
           {siteTitle}
         </Link>
       </h1>
