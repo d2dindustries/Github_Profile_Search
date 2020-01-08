@@ -1,9 +1,35 @@
-.search-results{
-	max-height: 300px;
-	overflow-y: scroll;
 
-	&-item:hover{
-		background-color: #dddddd;
-		cursor: pointer;
+.search-results{
+	border-radius: 15px;
+	padding: 10px;
+  	box-shadow: 0px 0px 8px 5px #ebebeb;
+
+	&-list{
+		max-height: 300px;
+		overflow-y: scroll;
+
+		&-item:hover{
+			background-color: #dddddd;
+			cursor: pointer;
+		}
+
+		&-item{
+			display: flex;
+
+			&-tag{
+				align-self: center;
+				margin: 0 auto;
+			}
+
+			&-img{
+				width: 3rem;
+				height: 3em;
+			}
+		}
+
+	}
+
+	&-load-button{
+		margin: 0 auto;
 	}
 }

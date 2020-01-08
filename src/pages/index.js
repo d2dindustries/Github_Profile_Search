@@ -14,30 +14,41 @@ const IndexPage = () => {
 	const [results, setResults] = useState([]);
 	const [username, setUsername] = useState("");
 	const [errorMsg, setError] = useState("");
+	const [totalCount, setTotalCount] = useState(0);
+
 	useEffect(() => {
+		function resetState(){
+		  	setResults([]);
+		  	setTotalCount(0);			
+		}
+
 		(async function getUserProfile() {
 		  if(!username){
-		  	setResults([]);
+		  	resetState();
 		  	return;
 		  }
 		  const { error, data } = await api.searchUserProfiles(username);
 		  if(error){
 		    setError("Error: Something went wrong.");
-		  	setResults([]);
+		  	resetState();
 		  }else{
 		  	const { total_count, items } = data;
 		    setError("");
 		  	setResults(items);
+		  	setTotalCount(total_count);
 		  }
 		})();
 	}, [username]);
+
+	const SHOW_RESULTS = results.length > 0;
 
 	return (
 	  <Layout>
 	    <SEO title="Home" />
 	    <SearchBarContainer title="Github Profile Search" placeholder="Enter a Github Username" onChange={ setUsername }/>
 	    <p>{ errorMsg }</p>
-	    <SearchResultsContainer results={ results }/>
+	    { SHOW_RESULTS ? <SearchResultsContainer results={ results }/> : null }
+	    { SHOW_RESULTS ? <p style={{ fontSize: 14, textAlign: 'center', paddingTop: 10 }}>Showing { results.length }/{ totalCount } Results</p> : null }
 	  </Layout>
 	);
 }
