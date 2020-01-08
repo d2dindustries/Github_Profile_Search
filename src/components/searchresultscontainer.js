@@ -6,8 +6,12 @@ import { ListGroup, ListGroupItem } from 'reactstrap';
 import "./searchresultscontainer.scss";
 
 const SearchResultsContainer = ({ results }) => {
-	const searchResults = results.map((item) => {
-		return <ListGroupItem className="search-results-item">item</ListGroupItem>;
+	const searchResults = results.map(({ id, login }) => {
+		return (
+			<ListGroupItem key={ id } className="search-results-item">
+				{ login }
+			</ListGroupItem>
+		);
 	});
 
 	return (

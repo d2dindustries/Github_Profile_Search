@@ -5,11 +5,23 @@ import SearchBar from "./searchbar"
 
 import "./searchbarcontainer.scss"
 
-const SearchbarContainer = () => (
+const SearchbarContainer = ({ title, placeholder, onChange }) => (
   <div>
-    <h1 className="search-header">Github Profile Search</h1>
-    <SearchBar placeholder="Enter a Github Username"/>
+    <h1 className="search-header">{ title }</h1>
+    <SearchBar placeholder={ placeholder } onChange={ onChange }/>
   </div>
 )
+
+SearchbarContainer.propTypes = {
+  title: PropTypes.string,
+  placeholder: PropTypes.string,
+  onChange: PropTypes.func,
+}
+
+SearchbarContainer.defaultProps = {
+  title: ``,
+  placeholder: ``,
+  onChange: () => {},
+}
 
 export default SearchbarContainer
