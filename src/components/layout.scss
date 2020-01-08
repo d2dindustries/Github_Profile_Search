@@ -1,3 +1,15 @@
+::-webkit-scrollbar {
+    width: 8px;
+    height: 10px;
+    background: #EEE;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background: #c2c9d2;
+}
+
 html {
   font-family: sans-serif;
   -ms-text-size-adjust: 100%;
@@ -7,6 +19,12 @@ body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  // background-image: -webkit-linear-gradient(to right, #00d4ff, #3a74cd); 
+  // background-image:    -moz-linear-gradient(to right, #00d4ff, #3a74cd); 
+  // background-image:     -ms-linear-gradient(to right, #00d4ff, #3a74cd); 
+  // background-image:      -o-linear-gradient(to right, #00d4ff, #3a74cd); 
+  // background-image:         linear-gradient(to right, #00d4ff, #3a74cd);
 }
 article,
 aside,
@@ -333,13 +351,13 @@ hgroup {
   margin-bottom: 1.45rem;
 }
 ul {
-  margin-left: 1.45rem;
+  margin-left: 0;
   margin-right: 0;
-  margin-top: 0;
   padding-bottom: 0;
   padding-left: 0;
   padding-right: 0;
   padding-top: 0;
+  margin-top: 1.45rem;
   margin-bottom: 1.45rem;
   list-style-position: outside;
   list-style-image: none;

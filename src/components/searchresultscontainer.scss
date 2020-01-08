@@ -1,4 +1,9 @@
 .search-results{
 	max-height: 300px;
-	overflow: overlay;
+	overflow-y: scroll;
+
+	&-item:hover{
+		background-color: #dddddd;
+		cursor: pointer;
+	}
 }

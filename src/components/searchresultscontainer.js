@@ -7,7 +7,7 @@ import "./searchresultscontainer.scss";
 
 const SearchResultsContainer = ({ results }) => {
 	const searchResults = results.map((item) => {
-		return <ListGroupItem>item</ListGroupItem>;
+		return <ListGroupItem className="search-results-item">item</ListGroupItem>;
 	});
 
 	return (
