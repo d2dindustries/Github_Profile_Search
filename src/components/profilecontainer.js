@@ -6,16 +6,17 @@ import { Media, Button } from 'reactstrap';
 
 import "./profilecontainer.scss";
 
-const ProfileContainer = ({ results }) => {
+const ProfileContainer = ({ profile }) => {
+	const { avatar, username } = profile;
 	return (
 		<div className="profile-container">
 		    <Media>
-		      <Media left href="#">
-		        <Media object src="holder.js/64x64" />
+		      <Media left href="#" className="profile-img">
+		        <Media object src={ avatar } />
 		      </Media>
-		      <Media body>
+		      <Media body className="profile-header">
 		        <Media heading>
-		          Media heading
+		          { username }
 		        </Media>
 		        Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
 		      </Media>
@@ -25,11 +26,11 @@ const ProfileContainer = ({ results }) => {
 }
 
 ProfileContainer.propTypes = {
-  results: PropTypes.array,
+  profile: PropTypes.object,
 }
 
 ProfileContainer.defaultProps = {
-  results: [],
+  profile: {},
 }
 
 export default ProfileContainer

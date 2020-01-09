@@ -14,30 +14,49 @@ import { searchUserProfiles } from "../api/api"
 import { usePrevious } from "../utilities/stateutility"
 
 const IndexPage = () => {
+	//Search State
 	const [results, setResults] = useState([]);
 	const [username, setUsername] = useState("");
-	const [errorMsg, setError] = useState("");
+	const [errorSearchMsg, setSearchError] = useState("");
 	const [totalUserCount, setTotalUserCount] = useState(0);
 	const [page, setPage] = useState(1);
 
-	function _setStateValues(errVal, resVal, countVal, pageVal = null){
-	    setError(errVal);
+	//Profile State
+	const [profile, setProfile] = useState({});
+	// const [errorProfileMsg, setProfileError] = useState("");
+
+	function _setStateValues(errVal, resVal, countVal, pageVal = null, profileVal = null){
+	    setSearchError(errVal);
 	  	setResults(resVal);
 	  	setTotalUserCount(countVal);
 	  	if(pageVal) setPage(pageVal);
+	  	if(profileVal) setProfile(profileVal);
 	}
 
 	function _resetState(){
 		console.log("State Reset");
-		_setStateValues("", [], 0, 1);
+		_setStateValues("", [], 0, 1, {});
 	}
+
+	// async function _getUserFollowers(curResults) {
+	//   const { error, data } = await getUserFollowers(username);
+	  
+	//   if(error){
+	//   	_resetState();
+	//     setProfileError("Error: Something went wrong.");
+	//   }else{
+	//   	const errorVal = data.length === 0 ? "The Profile you are looking for could not be found." : "";	  	
+	//   	setProfileError(errorVal);
+	//   	setProfile(data);
+	//   }
+	// }
 
 	async function _searchUserProfiles(curResults) {
 	  const { error, data } = await searchUserProfiles(username, page);
 	  
 	  if(error){
 	  	_resetState();
-	    setError("Error: Something went wrong.");
+	    setSearchError("Error: Something went wrong.");
 	  }else{
 	  	const { total_count, items } = data;
 	  	const newResults = curResults.concat(items);
@@ -57,7 +76,8 @@ const IndexPage = () => {
 		if(username) _searchUserProfiles(curResults);
 	}, [username, page]);
 
-	const SHOW_RESULTS = results.length > 0;
+	const SHOW_PROFILE = profile.username;
+	const SHOW_RESULTS = results.length > 0 && !SHOW_PROFILE;
 	const PAGE_CLASS = SHOW_RESULTS ? "page-container" : "page-container page-container-pad";
 
 	return (
@@ -65,10 +85,10 @@ const IndexPage = () => {
 	    <SEO title="Home" />
 	    <div className={ PAGE_CLASS }>
 		    <SearchBarContainer title="Github Profile Search" placeholder="Enter a Github Username" onChange={ setUsername }/>
-		    { errorMsg ? <p>{ errorMsg }</p> : null }
-		    { SHOW_RESULTS ? <SearchResultsContainer results={ results } totalUserCount={ totalUserCount } loadMore={ () => setPage(page+1) }/> : null }
+		    { errorSearchMsg ? <p>{ errorSearchMsg }</p> : null }
+		    { SHOW_RESULTS ? <SearchResultsContainer results={ results } totalUserCount={ totalUserCount } loadMore={ () => setPage(page+1) } openProfile={ ({ avatar, username }) => setProfile({ avatar: avatar, username: username }) }/> : null }
 		    { SHOW_RESULTS ? <p style={{ fontSize: 14, textAlign: 'center', paddingTop: 10 }}>Showing { results.length }/{ totalUserCount } Results</p> : null }
-		    { <ProfileContainer /> }
+		    { SHOW_PROFILE ? <ProfileContainer profile={ profile }/> : null }
 		</div>
 	  </Layout>
 	);

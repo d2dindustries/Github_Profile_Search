@@ -7,8 +7,8 @@ import SearchResultsItem from "./searchresultsitem"
 
 import "./searchresultscontainer.scss";
 
-const SearchResultsContainer = ({ results, totalUserCount, loadMore }) => {
-	const searchResults = results.map((data) => <SearchResultsItem key={data.id} data={data}/>);
+const SearchResultsContainer = ({ results, totalUserCount, loadMore, openProfile }) => {
+	const searchResults = results.map((data) => <SearchResultsItem key={data.id} data={data} openProfile={openProfile} />);
 
 	if(results.length !== totalUserCount){
 		searchResults.push(
