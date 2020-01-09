@@ -25,17 +25,18 @@ const IndexPage = () => {
 	const [profile, setProfile] = useState({});
 	const [errorProfileMsg, setProfileError] = useState("");
 
-	function _setStateValues(errVal, resVal, countVal, pageVal = null, profileVal = null){
+	function _setStateValues(errVal, resVal, countVal, pageVal = null, profileVal = null, errProfVal = null){
 	    setSearchError(errVal);
 	  	setResults(resVal);
 	  	setTotalUserCount(countVal);
 	  	if(pageVal) setPage(pageVal);
 	  	if(profileVal) setProfile(profileVal);
+	  	if(errProfVal) setProfileError(errProfVal);
 	}
 
 	function _resetState(){
 		console.log("State Reset");
-		_setStateValues("", [], 0, 1, {});
+		_setStateValues("", [], 0, 1, {}, "");
 	}
 
 	async function _getUserFollowers() {
@@ -43,10 +44,10 @@ const IndexPage = () => {
 	  
 	  if(error){
 	  	_resetState();
-	    setProfileError("Error: Something went wrong.");
+	    setProfileError("Error: Something went wrong. Please try again soon.");
 	  }else{
-	  	const errorVal = data.length === 0 ? "The Profile you are looking for could not be found." : "";	  	
-	  	setProfileError(errorVal);
+	  	// const errorVal = data.length === 0 ? "This Profile doesn't seem to have any followers." : "";
+	  	// setProfileError(errorVal);
 	  	setProfile({ ...profile, followers: data });
 	  }
 	}
@@ -56,7 +57,7 @@ const IndexPage = () => {
 	  
 	  if(error){
 	  	_resetState();
-	    setSearchError("Error: Something went wrong.");
+	    setSearchError("Error: Something went wrong. Please try again soon.");
 	  }else{
 	  	const { total_count, items } = data;
 	  	const newResults = curResults.concat(items);
@@ -68,8 +69,8 @@ const IndexPage = () => {
 
 	const prevUsername = usePrevious(username);
 
-	useEffect(() => {
-		_getUserFollowers();
+	useEffect(() => {	
+		if(profile.username) _getUserFollowers();
 	}, [profile.username]);
 
 
@@ -97,6 +98,7 @@ const IndexPage = () => {
 		    { SHOW_RESULTS ? <SearchResultsContainer results={ results } totalUserCount={ totalUserCount } loadMore={ () => setPage(page+1) } openProfile={ ({ avatar, username }) => setProfile({ avatar: avatar, username: username }) }/> : null }
 		    { SHOW_RESULTS ? <p style={{ fontSize: 14, textAlign: 'center', paddingTop: 10 }}>Showing { results.length }/{ totalUserCount } Results</p> : null }
 		    { SHOW_PROFILE ? <ProfileContainer profile={ profile }/> : null }
+		    { errorProfileMsg ? <p>{ errorProfileMsg }</p> : null}
 		    { SHOW_FOLLOWERS ? <h6><b>Followers: { FOLLOWER_COUNT }</b></h6> : null }
 		    { SHOW_FOLLOWERS ? <SearchResultsContainer results={ followers } totalUserCount={ FOLLOWER_COUNT } /> : null }
 		</div>
