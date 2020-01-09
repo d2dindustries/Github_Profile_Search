@@ -6,8 +6,8 @@ import SearchBar from "./searchbar"
 import "./searchbarcontainer.scss"
 
 const SearchbarContainer = ({ title, placeholder, onChange }) => (
-  <div>
-    <h1 className="search-header">{ title }</h1>
+  <div className="searchbar-container">
+    <h1 className="searchbar-header">{ title }</h1>
     <SearchBar placeholder={ placeholder } onChange={ onChange }/>
   </div>
 )

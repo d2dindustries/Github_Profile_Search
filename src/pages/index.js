@@ -3,6 +3,7 @@ import { Link } from "gatsby"
 
 import Layout from "../components/layout"
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './index.scss'
 
 import Image from "../components/image"
 import SearchBarContainer from "../components/searchbarcontainer"
@@ -26,7 +27,6 @@ const IndexPage = () => {
 	}
 
 	async function _searchUserProfiles(curResults) {
-	  if(!username) return _resetState();
 	  const { error, data } = await searchUserProfiles(username, page);
 	  
 	  if(error){
@@ -46,21 +46,24 @@ const IndexPage = () => {
 
 	useEffect(() => {
 		const isUsernameChanged = prevUsername !== username;
-		if(isUsernameChanged) _resetState(); //Reset the state if the username input was changed
+		if(isUsernameChanged || !username) _resetState();
 
 		const curResults = isUsernameChanged ? [] : results;
-		_searchUserProfiles(curResults);
+		if(username) _searchUserProfiles(curResults);
 	}, [username, page]);
 
 	const SHOW_RESULTS = results.length > 0;
+	const PAGE_CLASS = SHOW_RESULTS ? "page-container" : "page-container page-container-pad";
 
 	return (
 	  <Layout>
 	    <SEO title="Home" />
-	    <SearchBarContainer title="Github Profile Search" placeholder="Enter a Github Username" onChange={ setUsername }/>
-	    <p>{ errorMsg }</p>
-	    { SHOW_RESULTS ? <SearchResultsContainer results={ results } loadMore={ () => setPage(page+1) }/> : null }
-	    { SHOW_RESULTS ? <p style={{ fontSize: 14, textAlign: 'center', paddingTop: 10 }}>Showing { results.length }/{ totalUserCount } Results</p> : null }
+	    <div className={ PAGE_CLASS }>
+		    <SearchBarContainer title="Github Profile Search" placeholder="Enter a Github Username" onChange={ setUsername }/>
+		    { errorMsg ? <p>{ errorMsg }</p> : null }
+		    { SHOW_RESULTS ? <SearchResultsContainer results={ results } loadMore={ () => setPage(page+1) }/> : null }
+		    { SHOW_RESULTS ? <p style={{ fontSize: 14, textAlign: 'center', paddingTop: 10 }}>Showing { results.length }/{ totalUserCount } Results</p> : null }
+		</div>
 	  </Layout>
 	);
 }
