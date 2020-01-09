@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Link } from "gatsby"
 
 import Layout from "../components/layout"
@@ -8,37 +8,49 @@ import Image from "../components/image"
 import SearchBarContainer from "../components/searchbarcontainer"
 import SearchResultsContainer from "../components/searchresultscontainer"
 import SEO from "../components/seo"
-import * as api from "../api/api"
+import { searchUserProfiles } from "../api/api"
+import { usePrevious } from "../utilities/stateutility"
 
 const IndexPage = () => {
 	const [results, setResults] = useState([]);
 	const [username, setUsername] = useState("");
 	const [errorMsg, setError] = useState("");
-	const [totalCount, setTotalCount] = useState(0);
+	const [totalUserCount, setTotalUserCount] = useState(0);
+	const [page, setPage] = useState(1);
+
+	function _resetState(){
+		console.log("State Reset");
+	  	setResults([]);
+	  	setTotalUserCount(0);
+	  	setPage(1);
+	}
+
+	async function _searchUserProfiles(curResults) {
+	  if(!username) return _resetState();
+	  const { error, data } = await searchUserProfiles(username, page);
+	  
+	  if(error){
+	    setError("Error: Something went wrong.");
+	  	_resetState();
+	  }else{
+	  	const { total_count, items } = data;
+	  	const newResults = curResults.concat(items);
+
+	    setError("");
+	  	setResults(newResults);
+	  	setTotalUserCount(total_count);
+	  }
+	}
+
+	const prevUsername = usePrevious(username);
 
 	useEffect(() => {
-		function resetState(){
-		  	setResults([]);
-		  	setTotalCount(0);			
-		}
+		const isUsernameChanged = prevUsername !== username;
+		if(isUsernameChanged) _resetState(); //Reset the state if the username input was changed
 
-		(async function getUserProfile() {
-		  if(!username){
-		  	resetState();
-		  	return;
-		  }
-		  const { error, data } = await api.searchUserProfiles(username);
-		  if(error){
-		    setError("Error: Something went wrong.");
-		  	resetState();
-		  }else{
-		  	const { total_count, items } = data;
-		    setError("");
-		  	setResults(items);
-		  	setTotalCount(total_count);
-		  }
-		})();
-	}, [username]);
+		const curResults = isUsernameChanged ? [] : results;
+		_searchUserProfiles(curResults);
+	}, [username, page]);
 
 	const SHOW_RESULTS = results.length > 0;
 
@@ -47,8 +59,8 @@ const IndexPage = () => {
 	    <SEO title="Home" />
 	    <SearchBarContainer title="Github Profile Search" placeholder="Enter a Github Username" onChange={ setUsername }/>
 	    <p>{ errorMsg }</p>
-	    { SHOW_RESULTS ? <SearchResultsContainer results={ results }/> : null }
-	    { SHOW_RESULTS ? <p style={{ fontSize: 14, textAlign: 'center', paddingTop: 10 }}>Showing { results.length }/{ totalCount } Results</p> : null }
+	    { SHOW_RESULTS ? <SearchResultsContainer results={ results } loadMore={ () => setPage(page+1) }/> : null }
+	    { SHOW_RESULTS ? <p style={{ fontSize: 14, textAlign: 'center', paddingTop: 10 }}>Showing { results.length }/{ totalUserCount } Results</p> : null }
 	  </Layout>
 	);
 }
