@@ -8,6 +8,7 @@ import './index.scss'
 import Image from "../components/image"
 import SearchBarContainer from "../components/searchbarcontainer"
 import SearchResultsContainer from "../components/searchresultscontainer"
+import ProfileContainer from "../components/profilecontainer";
 import SEO from "../components/seo"
 import { searchUserProfiles } from "../api/api"
 import { usePrevious } from "../utilities/stateutility"
@@ -19,26 +20,30 @@ const IndexPage = () => {
 	const [totalUserCount, setTotalUserCount] = useState(0);
 	const [page, setPage] = useState(1);
 
+	function _setStateValues(errVal, resVal, countVal, pageVal = null){
+	    setError(errVal);
+	  	setResults(resVal);
+	  	setTotalUserCount(countVal);
+	  	if(pageVal) setPage(pageVal);
+	}
+
 	function _resetState(){
 		console.log("State Reset");
-	  	setResults([]);
-	  	setTotalUserCount(0);
-	  	setPage(1);
+		_setStateValues("", [], 0, 1);
 	}
 
 	async function _searchUserProfiles(curResults) {
 	  const { error, data } = await searchUserProfiles(username, page);
 	  
 	  if(error){
-	    setError("Error: Something went wrong.");
 	  	_resetState();
+	    setError("Error: Something went wrong.");
 	  }else{
 	  	const { total_count, items } = data;
 	  	const newResults = curResults.concat(items);
 
-	    setError("");
-	  	setResults(newResults);
-	  	setTotalUserCount(total_count);
+	  	const errorVal = total_count === 0 ? "The User you are looking for could not be found." : "";
+		_setStateValues(errorVal, newResults, total_count);
 	  }
 	}
 
@@ -61,8 +66,9 @@ const IndexPage = () => {
 	    <div className={ PAGE_CLASS }>
 		    <SearchBarContainer title="Github Profile Search" placeholder="Enter a Github Username" onChange={ setUsername }/>
 		    { errorMsg ? <p>{ errorMsg }</p> : null }
-		    { SHOW_RESULTS ? <SearchResultsContainer results={ results } loadMore={ () => setPage(page+1) }/> : null }
+		    { SHOW_RESULTS ? <SearchResultsContainer results={ results } totalUserCount={ totalUserCount } loadMore={ () => setPage(page+1) }/> : null }
 		    { SHOW_RESULTS ? <p style={{ fontSize: 14, textAlign: 'center', paddingTop: 10 }}>Showing { results.length }/{ totalUserCount } Results</p> : null }
+		    { <ProfileContainer /> }
 		</div>
 	  </Layout>
 	);

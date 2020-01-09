@@ -2,28 +2,21 @@ import PropTypes from "prop-types"
 import React from "react"
 
 import { ListGroup, ListGroupItem } from 'reactstrap';
-import { Col, Row, Media, Button } from 'reactstrap';
+import { Media, Button } from 'reactstrap';
+import SearchResultsItem from "./searchresultsitem"
 
 import "./searchresultscontainer.scss";
 
-const SearchResultsContainer = ({ results, loadMore }) => {
-	const searchResults = results.map(({ id, login, avatar_url }) => {
-		return (
-			<ListGroupItem key={ id } className="search-results-list-item">
-				<div className="d-flex">
-					<Media href="#" className="search-results-list-item-img">
-						<Media object src={ avatar_url }/>
-					</Media>
-					<p className="search-results-list-item-tag pl-5">{ login }</p>
-				</div>
+const SearchResultsContainer = ({ results, totalUserCount, loadMore }) => {
+	const searchResults = results.map((data) => <SearchResultsItem key={data.id} data={data}/>);
+
+	if(results.length !== totalUserCount){
+		searchResults.push(
+			<ListGroupItem key={-29219291} className="search-results-list-item">
+				<Button className="search-results-load-button" onClick={ loadMore }>Load More</Button>
 			</ListGroupItem>
 		);
-	});
-	searchResults.push(
-		<ListGroupItem key={-29219291} className="search-results-list-item">
-			<Button className="search-results-load-button" onClick={ loadMore }>Load More</Button>
-		</ListGroupItem>
-	);
+	}
 
 	return (
 		<div className="search-results">
@@ -32,6 +25,18 @@ const SearchResultsContainer = ({ results, loadMore }) => {
 			</ListGroup>
 		</div>
 	);
+}
+
+SearchResultsContainer.propTypes = {
+  results: PropTypes.array,
+  totalUserCount: PropTypes.number,
+  loadMore: PropTypes.func,
+}
+
+SearchResultsContainer.defaultProps = {
+  results: [],
+  totalUserCount: 0,
+  loadMore: () => {},
 }
 
 export default SearchResultsContainer
