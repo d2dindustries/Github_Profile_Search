@@ -7,7 +7,7 @@ import "./profilecontainer.scss";
 const ProfileContainer = ({ visible, profile, error }) => {
 	if(!visible) return null;
 
-	const { avatar, username, followers } = profile;
+	const { avatar, username, followers, html_url } = profile;
 	return (
 		<>
 			<div className="profile-container">
@@ -17,10 +17,9 @@ const ProfileContainer = ({ visible, profile, error }) => {
 			      </Media>
 			      <Media body className="profile-header">
 			        <Media heading>
-			          { username }
+			          <a target="_blank" href={html_url}> { username } </a>
 			        </Media>
-			        { followers ? <p>Followers: { followers ? followers.length : 0 }</p> : null}
-			        Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+			        <p>Followers: { followers ? followers.length : 0 }</p>
 			      </Media>
 			    </Media>
 			</div>

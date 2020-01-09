@@ -27,7 +27,8 @@ const IndexPage = () => {
 		profile: {
 			avatar: "",
 			username: "",
-			followers: []
+			followers: [],
+			html_url: ""
 		}
 	}
 

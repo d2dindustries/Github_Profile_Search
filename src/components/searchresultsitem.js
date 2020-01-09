@@ -7,9 +7,9 @@ import { Media } from 'reactstrap';
 import "./searchresultsitem.scss";
 
 const SearchResultsItem = ({ data, openProfile }) => {
-	const { id, login, avatar_url } = data;    
+	const { id, login, avatar_url, html_url } = data;    
 	return (
-		<ListGroupItem key={ id } className="search-results-item" onClick={ () => openProfile({ avatar: avatar_url, username: login }) }>
+		<ListGroupItem key={ id } className="search-results-item" onClick={ () => openProfile({ avatar: avatar_url, username: login, html_url }) }>
 			<div className="d-flex">
 				<Media href="#" className="search-results-item-img">
 					<Media object src={ avatar_url }/>
