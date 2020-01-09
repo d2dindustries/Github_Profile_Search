@@ -1,14 +1,12 @@
-import { Link } from "gatsby"
-import PropTypes from "prop-types"
 import React from "react"
 import "./footer.scss"
-import * as constants from "../utilities/constants.js";
+import { APP_SOURCE_CODE } from "../utilities/constants.js";
 
 const Footer = () => (
   <footer className="app-footer">
-    © {new Date().getFullYear()}, Built for the
+    © {new Date().getFullYear()}, View the
     {` `}
-    <a href="https://www.gatsbyjs.org">{ constants.APP_NAME }</a>
+    <a href="https://www.gatsbyjs.org">{ APP_SOURCE_CODE }</a>
   </footer>
 )
 

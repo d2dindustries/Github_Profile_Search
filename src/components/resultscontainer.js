@@ -2,7 +2,7 @@ import PropTypes from "prop-types"
 import React from "react"
 
 import { ListGroup, ListGroupItem } from 'reactstrap';
-import { Media, Button } from 'reactstrap';
+import { Button } from 'reactstrap';
 import SearchResultsItem from "./searchresultsitem"
 
 import "./resultscontainer.scss";
