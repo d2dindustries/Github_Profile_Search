@@ -16,7 +16,7 @@ import { APP_SEARCH_TITLE, APP_SEARCH_SUB } from "../utilities/constants.js";
 const IndexPage = () => {
 	const DEFAULT_APP_STATE = {
 		username: "",
-		page: 0,
+		page: 1,
 		totalUserCount: 0,
 		results: [],
 		error: {
