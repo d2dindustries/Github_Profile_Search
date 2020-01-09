@@ -6,7 +6,9 @@ import { Media, Button } from 'reactstrap';
 
 import "./profilecontainer.scss";
 
-const ProfileContainer = ({ profile }) => {
+const ProfileContainer = ({ visible, profile }) => {
+	if(!visible) return null;
+
 	const { avatar, username, followers } = profile;
 	return (
 		<div className="profile-container">
@@ -27,10 +29,12 @@ const ProfileContainer = ({ profile }) => {
 }
 
 ProfileContainer.propTypes = {
+  visible: PropTypes.bool,
   profile: PropTypes.object,
 }
 
 ProfileContainer.defaultProps = {
+  visible: true,
   profile: {},
 }
 

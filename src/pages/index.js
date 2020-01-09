@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { Link } from "gatsby"
+import React, { useEffect, useReducer } from 'react'
 
 import Layout from "../components/layout"
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -7,81 +6,64 @@ import './index.scss'
 
 import Image from "../components/image"
 import SearchBarContainer from "../components/searchbarcontainer"
-import SearchResultsContainer from "../components/searchresultscontainer"
+import ResultsContainer from "../components/resultscontainer"
+import SearchCounter from "../components/searchcounter"
 import ProfileContainer from "../components/profilecontainer";
 import SEO from "../components/seo"
 import { searchUserProfiles, getUserFollowers } from "../api/api"
-import { usePrevious } from "../utilities/stateutility"
+import { _searchUserProfiles, _getUserFollowers } from "../api/middleware"
+import { usePrevious, mergeObjects } from "../utilities/stateutility"
 
 const IndexPage = () => {
-	//Search State
-	const [results, setResults] = useState([]);
-	const [username, setUsername] = useState("");
-	const [errorSearchMsg, setSearchError] = useState("");
-	const [totalUserCount, setTotalUserCount] = useState(0);
-	const [page, setPage] = useState(1);
-
-	//Profile State
-	const [profile, setProfile] = useState({});
-	const [errorProfileMsg, setProfileError] = useState("");
-
-	function _setStateValues(errVal, resVal, countVal, pageVal = null, profileVal = null, errProfVal = null){
-	    setSearchError(errVal);
-	  	setResults(resVal);
-	  	setTotalUserCount(countVal);
-	  	if(pageVal) setPage(pageVal);
-	  	if(profileVal) setProfile(profileVal);
-	  	if(errProfVal) setProfileError(errProfVal);
+	const DEFAULT_APP_STATE = {
+		username: "",
+		page: 0,
+		totalUserCount: 0,
+		results: [],
+		error: {
+			search: "",
+			profile: "",
+			followers: ""
+		},
+		profile: {
+			avatar: "",
+			username: "",
+			followers: []
+		}
 	}
+
+	const [state, setState] = useReducer((state, newState) => ( mergeObjects(state, newState) ), DEFAULT_APP_STATE);
 
 	function _resetState(){
 		console.log("State Reset");
-		_setStateValues("", [], 0, 1, {}, "");
+		setState(mergeObjects(DEFAULT_APP_STATE, { username: state.username }));
 	}
 
-	async function _getUserFollowers() {
-	  const { error, data } = await getUserFollowers(username);
-	  
-	  if(error){
-	  	_resetState();
-	    setProfileError("Error: Something went wrong. Please try again soon.");
-	  }else{
-	  	// const errorVal = data.length === 0 ? "This Profile doesn't seem to have any followers." : "";
-	  	// setProfileError(errorVal);
-	  	setProfile({ ...profile, followers: data });
-	  }
-	}
+	const prevUsername = usePrevious(state.username);
 
-	async function _searchUserProfiles(curResults) {
-	  const { error, data } = await searchUserProfiles(username, page);
-	  
-	  if(error){
-	  	_resetState();
-	    setSearchError("Error: Something went wrong. Please try again soon.");
-	  }else{
-	  	const { total_count, items } = data;
-	  	const newResults = curResults.concat(items);
+	useEffect(() => {
 
-	  	const errorVal = total_count === 0 ? "The User you are looking for could not be found." : "";
-		_setStateValues(errorVal, newResults, total_count);
-	  }
-	}
+		if(state.profile.username) _getUserFollowers(state,
+			(success) => { setState(success); },
+			(error) => { _resetState(); setState(error); });
 
-	const prevUsername = usePrevious(username);
-
-	useEffect(() => {	
-		if(profile.username) _getUserFollowers();
-	}, [profile.username]);
+	}, [state.profile.username]);
 
 
 	useEffect(() => {
+	    const { username, results } = state;
 		const isUsernameChanged = prevUsername !== username;
 		if(isUsernameChanged || !username) _resetState();
 
 		const curResults = isUsernameChanged ? [] : results;
-		if(username) _searchUserProfiles(curResults);
-	}, [username, page]);
 
+		if(username) _searchUserProfiles(state, curResults,
+			(success) => { setState(success); },
+			(error) => { _resetState(); setState(error); });
+
+	}, [state.username, state.page]);
+
+	const { page, profile, results, totalUserCount, error } = state;
 	const { followers } = profile;
 	const FOLLOWER_COUNT = followers ? followers.length : 0;
 	const SHOW_PROFILE = profile.username;
@@ -93,17 +75,19 @@ const IndexPage = () => {
 	  <Layout>
 	    <SEO title="Home" />
 	    <div className={ PAGE_CLASS }>
-		    <SearchBarContainer title="Github Profile Search" placeholder="Enter a Github Username" onChange={ setUsername }/>
-		    { errorSearchMsg ? <p>{ errorSearchMsg }</p> : null }
-		    { SHOW_RESULTS ? <SearchResultsContainer results={ results } totalUserCount={ totalUserCount } loadMore={ () => setPage(page+1) } openProfile={ ({ avatar, username }) => setProfile({ avatar: avatar, username: username }) }/> : null }
-		    { SHOW_RESULTS ? <p style={{ fontSize: 14, textAlign: 'center', paddingTop: 10 }}>Showing { results.length }/{ totalUserCount } Results</p> : null }
-		    { SHOW_PROFILE ? <ProfileContainer profile={ profile }/> : null }
-		    { errorProfileMsg ? <p>{ errorProfileMsg }</p> : null}
+		    <SearchBarContainer title="Github Profile Search" placeholder="Enter a Github Username" onChange={ setState }/>
+		    { error.search ? <p>{ error.search }</p> : null }
+		    <ResultsContainer visible={!SHOW_PROFILE} results={ results } totalUserCount={ totalUserCount } loadMore={ () => setState({ page: page+1 }) } openProfile={ (changedData) => setState({ profile: mergeObjects(profile, changedData) }) }/>
+		    <SearchCounter visible={!SHOW_PROFILE} count={results.length} total={totalUserCount} />
+		    <ProfileContainer visible={SHOW_PROFILE} profile={ profile }/>
+		    { error.profile ? <p>{ error.profile }</p> : null}
 		    { SHOW_FOLLOWERS ? <h6><b>Followers: { FOLLOWER_COUNT }</b></h6> : null }
-		    { SHOW_FOLLOWERS ? <SearchResultsContainer results={ followers } totalUserCount={ FOLLOWER_COUNT } /> : null }
+		    <ResultsContainer visible={SHOW_FOLLOWERS} results={ followers } totalUserCount={ FOLLOWER_COUNT } />
 		</div>
 	  </Layout>
 	);
 }
+
+
 
 export default IndexPage

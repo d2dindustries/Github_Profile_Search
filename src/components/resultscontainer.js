@@ -5,9 +5,11 @@ import { ListGroup, ListGroupItem } from 'reactstrap';
 import { Media, Button } from 'reactstrap';
 import SearchResultsItem from "./searchresultsitem"
 
-import "./searchresultscontainer.scss";
+import "./resultscontainer.scss";
 
-const SearchResultsContainer = ({ results, totalUserCount, loadMore, openProfile }) => {
+const ResultsContainer = ({ visible, results, totalUserCount, loadMore, openProfile }) => {
+	if(results.length === 0 || !visible) return null;
+
 	const searchResults = results.map((data) => <SearchResultsItem key={data.id} data={data} openProfile={openProfile} />);
 
 	if(results.length !== totalUserCount){
@@ -27,16 +29,18 @@ const SearchResultsContainer = ({ results, totalUserCount, loadMore, openProfile
 	);
 }
 
-SearchResultsContainer.propTypes = {
+ResultsContainer.propTypes = {
+  visible: PropTypes.bool,
   results: PropTypes.array,
   totalUserCount: PropTypes.number,
   loadMore: PropTypes.func,
 }
 
-SearchResultsContainer.defaultProps = {
+ResultsContainer.defaultProps = {
+  visible: true,
   results: [],
   totalUserCount: 0,
   loadMore: () => {},
 }
 
-export default SearchResultsContainer
+export default ResultsContainer

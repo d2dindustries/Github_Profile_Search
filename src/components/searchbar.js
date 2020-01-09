@@ -8,7 +8,7 @@ const SearchBar = ({ placeholder, onChange }) => {
 	const [username, setUsername] = useState("");
 
 	return (
-	    <form onSubmit={ (e) => { e.preventDefault(); onChange(username); } } >
+	    <form onSubmit={ (e) => { e.preventDefault(); onChange({ username }); } } >
 		  <InputGroup className="search">
 		    <Input className="search-bar" type="search" placeholder={ placeholder } onChange={ ({ target:{value} }) => setUsername(value) }/>
 		    <InputGroupAddon addonType="append">

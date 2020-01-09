@@ -9,3 +9,7 @@ export function usePrevious(trackVal) {
   
   return ref.current;
 }
+
+export function mergeObjects(curObj, newObj){
+	return { ...curObj, ...newObj };
+}
