@@ -34,7 +34,6 @@ const IndexPage = () => {
 	const [state, setState] = useReducer((state, newState) => ( mergeObjects(state, newState) ), DEFAULT_APP_STATE);
 
 	function _resetState(){
-		// console.log("State Reset");
 		setState(mergeObjects(DEFAULT_APP_STATE, { username: state.username }));
 	}
 

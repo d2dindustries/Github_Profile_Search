@@ -17,8 +17,8 @@ export async function _searchUserProfiles(state, curResults, success, failure) {
 }
 
 export async function _getUserFollowers(state, success, failure) {
-  const { username, profile } = state;
-  const { error, data } = await getUserFollowers(username);
+  const { profile } = state;
+  const { error, data } = await getUserFollowers(profile.username);
 
   if(error){
   	failure({ error: { followers: "Error: Something went wrong. Please try again soon." } });
