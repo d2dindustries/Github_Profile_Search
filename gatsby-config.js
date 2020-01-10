@@ -1,9 +1,10 @@
 module.exports = {
   siteMetadata: {
-    title: `Gatsby Default Starter`,
-    description: `Kick off your next, great Gatsby project with this default starter. This barebones starter ships with the main Gatsby configuration files you might need.`,
-    author: `@gatsbyjs`,
+    title: `Github_Profile_Search`,
+    description: `A simple github api app to demonstrate a front-end to api integration. Allows for a user to search for a GitHub username.`,
+    author: `@d2dindustries`,
   },
+  pathPrefix: "/Github_Profile_Search",
   plugins: [
     `gatsby-plugin-react-helmet`,
     {
