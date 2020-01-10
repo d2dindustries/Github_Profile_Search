@@ -12,7 +12,7 @@ export async function _searchUserProfiles(state, curResults, success, failure) {
   	const newResults = curResults.concat(items);
 
   	const errorVal = total_count === 0 ? "The User you are looking for could not be found." : "";
-	  success({ error: { search: errorVal }, results: newResults, totalUserCount: total_count });
+	  success({ canLoad: true, error: { search: errorVal }, results: newResults, totalUserCount: total_count });
   }
 }
 
