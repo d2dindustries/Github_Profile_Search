@@ -4,7 +4,8 @@ import { mergeObjects } from "../utilities/stateutility"
 export async function _searchUserProfiles(state, curResults, success, failure) {
   const { username, page } = state;
   const { error, data } = await searchUserProfiles(username, page);
-  
+   console.log('get user prof');
+
   if(error){
   	failure({ error: { search: "Error: Something went wrong. Please try again soon." } });
   }else{

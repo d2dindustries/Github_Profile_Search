@@ -35,7 +35,8 @@ const IndexPage = () => {
 	const [state, setState] = useReducer((state, newState) => { return mergeObjects(state, newState) }, DEFAULT_APP_STATE);
 
 	function _resetState(){
-		setState(DEFAULT_APP_STATE);
+		console.log("State Reset");
+		setState(mergeObjects(DEFAULT_APP_STATE,{ username: state.username }));
 	}
 
 	function _getProfileInfo(apiFunc){
@@ -59,7 +60,10 @@ const IndexPage = () => {
 	useEffect(() => {
 	    const { username, results } = state;
 		const isUsernameChanged = prevUsername !== username;
-		if(isUsernameChanged || !username || username.length === 0) _resetState();
+		if(isUsernameChanged || !username || username.length === 0){
+			console.log("IN USE EFFECT username: "+username);
+			_resetState();
+		}
 
 		const curResults = isUsernameChanged ? [] : results;
 

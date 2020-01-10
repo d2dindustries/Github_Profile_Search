@@ -8,7 +8,7 @@ import "./searchresultsitem.scss";
 
 const SearchResultsItem = ({ data, openProfile }) => {
 	const { id, login, avatar_url } = data;    
-	const newProfileObj = { profile: { info: {}, followers: [], username: login } };
+	const newProfileObj = { profilePage: 1, profile: { info: {}, followers: [], username: login } };
 	return (
 		<ListGroupItem key={ id } className="search-results-item" onClick={ () => openProfile(newProfileObj) }>
 			<div className="d-flex">
