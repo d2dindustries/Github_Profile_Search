@@ -1,4 +1,4 @@
-<h1 align="center">Welcome to  Github_Profile_Searchh 👋</h1>
+<h1 align="center">Welcome to  Github_Profile_Search 👋</h1>
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-1.0-blue.svg?cacheSeconds=2592000" />
   <a href="https://github.com/gatsbyjs/gatsby-starter-default/graphs/commit-activity" target="_blank">
