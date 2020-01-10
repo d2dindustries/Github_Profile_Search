@@ -1,4 +1,4 @@
-import { searchUserProfiles, getUserFollowers } from "./api"
+import { searchUserProfiles, getUserFollowers, getUserProfile } from "./api"
 import { mergeObjects } from "../utilities/stateutility"
 
 export async function _searchUserProfiles(state, curResults, success, failure) {
@@ -17,12 +17,29 @@ export async function _searchUserProfiles(state, curResults, success, failure) {
 }
 
 export async function _getUserFollowers(state, success, failure) {
-  const { profile } = state;
-  const { error, data } = await getUserFollowers(profile.username);
+  const { profile, profilePage } = state;
+  const { error, data } = await getUserFollowers(profile.username, profilePage);
 
   if(error){
   	failure({ error: { followers: "Error: Something went wrong. Please try again soon." } });
   }else{
-    success({ profile: mergeObjects(profile, { followers: data }) });
+    const newResults = profile.followers.concat(data);
+    success({ followers: newResults });
+  }
+}
+
+export async function _getUserProfile(state, success, failure) {
+  const { profile } = state;
+  const { error, data } = await getUserProfile(profile.username);
+  const info = (({ name, html_url, avatar_url, company, blog, location, email, bio, followers, following }) =>
+    ({ info: { name, html_url, avatar_url, company, blog, location, email, bio, follower_count: followers, following_count: following } }))(data);
+
+  if(error){
+    failure({ error: { profile: "Error: Something went wrong. Please try again soon." } });
+  }else{
+    await _getUserFollowers(state, (followers) => {
+      const retObj = mergeObjects(info, followers);
+      success(mergeObjects(profile, retObj));
+    }, failure);
   }
 }

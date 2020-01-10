@@ -7,21 +7,33 @@ import "./profilecontainer.scss";
 const ProfileContainer = ({ visible, profile, error }) => {
 	if(!visible) return null;
 
-	const { avatar, username, followers, html_url } = profile;
+	// const { avatar, username, followers, html_url } = profile;
+
+	const { info, username } = profile;
+	const { name, html_url, avatar_url, company, blog, location, email, bio, follower_count, following_count } = info;
 	return (
 		<>
 			<div className="profile-container">
 			    <Media>
-			      <Media left href="#" className="profile-img">
-			        <Media object src={ avatar } />
+			      <Media left className="profile-img">
+			        <Media object src={ avatar_url } />
 			      </Media>
 			      <Media body className="profile-header">
 			        <Media heading>
+			          <p>{ name }</p>
 			          <a target="_blank" href={html_url}> { username } </a>
+			          { location ? <p>{ location }</p> : null }
 			        </Media>
-			        <p>Followers: { followers ? followers.length : 0 }</p>
+			        { blog ? <p>Blog: <a target="_blank" href={blog}> { blog } </a></p> : null }
+			        { email ? <p>Email: { email }</p> : null }
+			        { company ? <p>Company: { company }</p> : null }
+			        { follower_count != undefined ? <p>Followers: { follower_count }</p> : null }
+			        { following_count != undefined ? <p>Following: { following_count }</p> : null }
 			      </Media>
 			    </Media>
+			    <p className="p-2">
+			    	{ bio }
+			    </p>
 			</div>
 		    { error ? <p>{ error }</p> : null}
 		</>
